@@ -7,6 +7,7 @@ enum class Status { In_progress, Done, not_started };
 class Task
 {
 public:
+	Task();
 	Task(std::string name, std::string description, Priority priority, Status status);
 
 	std::string getName();

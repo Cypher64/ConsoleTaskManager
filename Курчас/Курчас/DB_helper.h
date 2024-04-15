@@ -9,7 +9,7 @@
 class DB_helper
 {
 public:
-	DB_helper(std::string server, std::string username, std::string password);
+	DB_helper(const std::string& server, const std::string& username, const std::string& password);
 
 	std::string getServer() const;
 	std::string getUsername() const;
@@ -20,9 +20,9 @@ public:
 
 	~DB_helper();
 private:
-	const std::string server_ip = "127.0.0.1:3306";
-	const std::string srv_username = "Walde";
-	const std::string srv_password = "2005090717_Vol";
+	const std::string server_ip;
+	const std::string srv_username;
+	const std::string srv_password;
 
 	sql::Driver* driver;
 	sql::Connection* con;
