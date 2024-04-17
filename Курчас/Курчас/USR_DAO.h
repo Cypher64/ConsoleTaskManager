@@ -18,7 +18,7 @@ public:
 	void LoginUSR(const std::string& login, const std::string& password);
 	void update_USR(const std::string& usrName, const std::string& usrLogin, const std::string& usrPassword);
 	void deletenUSR(const std::string& usrLogin, const std::string& usrPassword);
-
+	bool isLoggedIn();
 private:
 	DB_helper& server_func;
 	sql::PreparedStatement* pstmt;

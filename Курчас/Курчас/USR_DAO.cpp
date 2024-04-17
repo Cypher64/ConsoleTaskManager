@@ -27,9 +27,11 @@ void USR_DAO::LoginUSR(const std::string& login, const std::string& password)
     pstmt->setString(1, login);
     pstmt->setString(2, password);
     result = pstmt->executeQuery();
+    int t = 0;
     if (result->rowsCount() == 1)
     {
         std::cout << "Login successful." << std::endl;
+        t = 1;
     }
     else 
     {
@@ -65,4 +67,9 @@ void USR_DAO::deletenUSR(const std::string& usrLogin, const std::string& usrPass
     {
         printf("Failed to delete user. Incorrect login or password.\n");
     }
+}
+
+bool USR_DAO::isLoggedIn()
+{
+    return true;
 }
