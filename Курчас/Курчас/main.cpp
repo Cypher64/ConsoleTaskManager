@@ -5,6 +5,16 @@
 #include "Task_DAO.h"
 #include "User.h"
 #include "USR_DAO.h"
+#ifdef _WIN32
+#include <cstdlib>
+#endif // _WIN32
+
+static void clearConsole() 
+{
+#ifdef _WIN32
+    std::system("cls");
+#endif
+}
 
 int main()
 {
@@ -13,6 +23,12 @@ int main()
     link1:
     do
     {
+        clearConsole();
+        std::cout << "  ______" << std::endl;
+        std::cout << " /\\__  _\\" << std::endl;
+        std::cout << " \\/_/\\ \\/" << std::endl;
+        std::cout << "    \\ \\_\\" << std::endl;
+        std::cout << "     \\/_/ " << std::endl;
         std::cout << "1. Sign up" << std::endl
             << "2. Log in" << std::endl
             << "3. Exit" << std::endl;
@@ -45,6 +61,7 @@ int main()
             std::cin >> password;
 
             USR_DAO dao(server);
+            clearConsole();
             dao.LoginUSR(email, password);
             if (dao.isLoggedIn()) 
             {
@@ -53,6 +70,12 @@ int main()
                 link2:
                 do 
                 {
+                    clearConsole();
+                    std::cout << "  ______" << std::endl;
+                    std::cout << " /\\__  _\\" << std::endl;
+                    std::cout << " \\/_/\\ \\/" << std::endl;
+                    std::cout << "    \\ \\_\\" << std::endl;
+                    std::cout << "     \\/_/ " << std::endl;
                     std::cout << "1 Edit user" << std::endl
                         << "2. Task" << std::endl
                         << "3. Log out" << std::endl;
@@ -63,6 +86,12 @@ int main()
                     case 1:
                         break;
                     case 2:
+                        clearConsole();
+                        std::cout << "  ______" << std::endl;
+                        std::cout << " /\\__  _\\" << std::endl;
+                        std::cout << " \\/_/\\ \\/" << std::endl;
+                        std::cout << "    \\ \\_\\" << std::endl;
+                        std::cout << "     \\/_/ " << std::endl;
                         std::cout << "1. Create task" << std::endl
                             << "2. Update task" << std::endl
                             << "3. Task list" << std::endl
@@ -78,6 +107,7 @@ int main()
                         {
                             std::string title, description;
                             int priority;
+                            clearConsole();
                             std::cout << "Enter title: ";
                             std::cin >> title;
                             std::cout << "Enter description: ";
@@ -93,6 +123,8 @@ int main()
                         {
                             std::string title;
                             int priority, status;
+                            clearConsole();
+                            taskDao.selectList();
                             std::cout << "Enter title of the task to update: ";
                             std::cin >> title;
                             std::cout << "Enter new priority (1 - High, 2 - Medium, 3 - Low): ";
@@ -106,6 +138,7 @@ int main()
                         }
                         case 3:
                         {
+                            clearConsole();
                             taskDao.selectList();
                             break;
                         }
@@ -133,7 +166,6 @@ int main()
                         break;
                     default:
                         std::cout << "Wrong action. Try again." << std::endl;
-
                         break;
                     }
 
@@ -147,6 +179,7 @@ int main()
         }
         case 3:
         {
+            clearConsole();
             std::cout << "ByeBye:)" << std::endl;
             exit(1);
         }

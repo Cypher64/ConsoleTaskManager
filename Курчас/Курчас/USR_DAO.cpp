@@ -6,6 +6,8 @@
 #include <cppconn/prepared_statement.h>
 #include <string>
 
+int t = 0;
+
 USR_DAO::USR_DAO(DB_helper& server) : server_func(server) {}
 
 sql::PreparedStatement* USR_DAO::getPreparedStmt() { return pstmt; }
@@ -27,17 +29,17 @@ void USR_DAO::LoginUSR(const std::string& login, const std::string& password)
     pstmt->setString(1, login);
     pstmt->setString(2, password);
     result = pstmt->executeQuery();
-    int t = 0;
     if (result->rowsCount() == 1)
     {
         std::cout << "Login successful." << std::endl;
-        t = 1;
+        t++;
     }
     else 
     {
         std::cout << "Login failed. Incorrect login or password." << std::endl;
     }
 }
+
 
 void USR_DAO::update_USR(const std::string& usrName, const std::string& usrLogin, const std::string& usrPassword)
 {
@@ -71,5 +73,5 @@ void USR_DAO::deletenUSR(const std::string& usrLogin, const std::string& usrPass
 
 bool USR_DAO::isLoggedIn()
 {
-    return true;
+    return t;
 }
