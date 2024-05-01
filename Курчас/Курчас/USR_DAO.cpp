@@ -60,7 +60,7 @@ void USR_DAO::deletenUSR(const std::string& usrLogin, const std::string& usrPass
     result = pstmt->executeQuery();
     if (result->rowsCount() == 1) 
     {
-        pstmt = server_func.getCon()->prepareStatement("DELETE FROM User WHERE usr_login = ?");
+        pstmt = server_func.getCon()->prepareStatement("DELETE FROM User WHERE id = ?");
         pstmt->setString(1, usrLogin);
         pstmt->executeUpdate();
         printf("User deleted.\n");
@@ -74,4 +74,32 @@ void USR_DAO::deletenUSR(const std::string& usrLogin, const std::string& usrPass
 bool USR_DAO::isLoggedIn()
 {
     return t;
+}
+
+int USR_DAO::getUserID(const std::string& login)
+{
+    int userID = -1; // Повертати -1 в разі, якщо користувач не знайдений
+
+    try
+    {
+        // Готуємо запит до бази даних для отримання ID користувача за його логіном
+        pstmt = server_func.getCon()->prepareStatement("SELECT id FROM User WHERE usr_login = ?");
+        pstmt->setString(1, login);
+
+        // Виконуємо запит і отримуємо результат
+        result = pstmt->executeQuery();
+
+        // Перевіряємо, чи є результати запиту
+        if (result->next())
+        {
+            // Якщо є, отримуємо ID користувача
+            userID = result->getInt("id");
+        }
+    }
+    catch (const sql::SQLException& e)
+    {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+    }
+
+    return userID;
 }

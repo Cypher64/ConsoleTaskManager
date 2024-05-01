@@ -12,8 +12,8 @@ public:
 
 	std::string getName();
 	std::string getDescription();
-	Priority getPriority();
-	Status getStatus();
+	Priority getPriority() const;
+	Status getStatus() const;
 private:
 	std::string task_name;
 	std::string task_description;

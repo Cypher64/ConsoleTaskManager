@@ -1,5 +1,4 @@
 #include <iostream>
-#include <iostream>
 #include "DB_helper.h"
 #include "task.h"
 #include "Task_DAO.h"
@@ -16,6 +15,15 @@ static void clearConsole()
 #endif
 }
 
+static void logo()
+{
+    std::cout << "  ______" << std::endl;
+    std::cout << " /\\__  _\\" << std::endl;
+    std::cout << " \\/_/\\ \\/" << std::endl;
+    std::cout << "    \\ \\_\\" << std::endl;
+    std::cout << "     \\/_/ " << std::endl;
+}
+
 int main()
 {
 	DB_helper server("127.0.0.1:3306", "Walde", "2005090717_Vol");
@@ -23,12 +31,7 @@ int main()
     link1:
     do
     {
-        clearConsole();
-        std::cout << "  ______" << std::endl;
-        std::cout << " /\\__  _\\" << std::endl;
-        std::cout << " \\/_/\\ \\/" << std::endl;
-        std::cout << "    \\ \\_\\" << std::endl;
-        std::cout << "     \\/_/ " << std::endl;
+        logo();
         std::cout << "1. Sign up" << std::endl
             << "2. Log in" << std::endl
             << "3. Exit" << std::endl;
@@ -49,6 +52,7 @@ int main()
 
             User newUser(username, email, password);
             USR_DAO dao(server);
+            clearConsole();
             dao.registerUSR(newUser);
             break;
         }
@@ -63,6 +67,7 @@ int main()
             USR_DAO dao(server);
             clearConsole();
             dao.LoginUSR(email, password);
+            int ID = dao.getUserID(email);
             if (dao.isLoggedIn()) 
             {
 
@@ -70,13 +75,8 @@ int main()
                 link2:
                 do 
                 {
-                    clearConsole();
-                    std::cout << "  ______" << std::endl;
-                    std::cout << " /\\__  _\\" << std::endl;
-                    std::cout << " \\/_/\\ \\/" << std::endl;
-                    std::cout << "    \\ \\_\\" << std::endl;
-                    std::cout << "     \\/_/ " << std::endl;
-                    std::cout << "1 Edit user" << std::endl
+                    logo();
+                    std::cout << "1. Edit user" << std::endl
                         << "2. Task" << std::endl
                         << "3. Log out" << std::endl;
                     int action2;
@@ -86,12 +86,9 @@ int main()
                     case 1:
                         break;
                     case 2:
-                        clearConsole();
-                        std::cout << "  ______" << std::endl;
-                        std::cout << " /\\__  _\\" << std::endl;
-                        std::cout << " \\/_/\\ \\/" << std::endl;
-                        std::cout << "    \\ \\_\\" << std::endl;
-                        std::cout << "     \\/_/ " << std::endl;
+                        link3:
+                        //clearConsole();
+                        logo();
                         std::cout << "1. Create task" << std::endl
                             << "2. Update task" << std::endl
                             << "3. Task list" << std::endl
@@ -116,7 +113,9 @@ int main()
                             std::cin >> priority;
                             Priority taskPriority = static_cast<Priority>(priority - 1);
                             Task newTask(title, description, taskPriority, Status::not_started);
-                            taskDao.insertInToList(newTask);
+                            clearConsole();
+                            taskDao.insertInToList(newTask, ID);
+                            goto link3;
                             break;
                         }
                         case 2:
@@ -124,7 +123,7 @@ int main()
                             std::string title;
                             int priority, status;
                             clearConsole();
-                            taskDao.selectList();
+                            taskDao.selectList(ID);
                             std::cout << "Enter title of the task to update: ";
                             std::cin >> title;
                             std::cout << "Enter new priority (1 - High, 2 - Medium, 3 - Low): ";
@@ -133,39 +132,49 @@ int main()
                             std::cin >> status;
                             Priority newPriority = static_cast<Priority>(priority - 1);
                             Status newStatus = static_cast<Status>(status - 1);
-                            taskDao.updateNoteStatus(title, newPriority, newStatus);
+                            clearConsole();
+                            taskDao.updateNoteStatus(title, newPriority, newStatus, ID);
+                            goto link3;
                             break;
                         }
                         case 3:
                         {
                             clearConsole();
-                            taskDao.selectList();
+                            taskDao.selectList(ID);
                             break;
                         }
                         case 4:
                         {
                             std::string title;
+                            clearConsole();
                             std::cout << "Enter title of the task to delete: ";
                             std::cin >> title;
-                            taskDao.deletenNote(title);
+                            clearConsole();
+                            taskDao.deletenNote(title, ID);
+                            goto link3;
                             break;
                         }
                         case 5:
                         {
+                            clearConsole();
                             goto link2;
                         }
                         default:
                         {
-                            std::cout << "Wrong action. Try again." << std::endl;
+                            clearConsole();
+                            std::cerr << "Wrong action. Try again." << std::endl;
+                            goto link3;
                             break;
                         }
                         }
                         break;
                     case 3:
+                        clearConsole();
                         goto link1;
                         break;
                     default:
-                        std::cout << "Wrong action. Try again." << std::endl;
+                        clearConsole();
+                        std::cerr << "Wrong action. Try again." << std::endl;
                         break;
                     }
 
@@ -173,7 +182,8 @@ int main()
             }
             else 
             {
-                goto link1;
+                clearConsole();
+                std::cerr << "Account not exist, try to sign up." << std::endl;
             }
             break;
         }
@@ -184,7 +194,8 @@ int main()
             exit(1);
         }
         default:
-            std::cout << "Wrong action. Try again." << std::endl;
+            clearConsole();
+            std::cerr << "Wrong action. Try again." << std::endl;
             break;
         }
     } while (true);

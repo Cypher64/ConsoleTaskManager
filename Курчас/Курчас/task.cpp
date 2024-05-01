@@ -7,5 +7,5 @@ Task::Task(std::string name, std::string description, Priority priority, Status 
 
 std::string Task::getName() { return task_name; }
 std::string Task::getDescription() { return task_description; }
-Priority Task::getPriority() { return task_priority; }
-Status Task::getStatus() { return task_status; }
+Priority Task::getPriority() const { return task_priority; }
+Status Task::getStatus() const { return task_status; }
