@@ -2,7 +2,7 @@
 #include <string>
 
 enum class Priority { High, Medium, Low };
-enum class Status { In_progress, Done, not_started };
+enum class Status { In_progress, Done, Not_started };
 
 class Task
 {
