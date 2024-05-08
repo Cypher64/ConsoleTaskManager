@@ -1,6 +1,9 @@
 #pragma once
+#pragma warning(disable: 26495)
+
 #include "DB_helper.h"
 #include "User.h"
+
 #include <mysql_connection.h>
 #include <cppconn/resultset.h>
 #include <cppconn/prepared_statement.h>
@@ -15,12 +18,11 @@ public:
 	sql::ResultSet* getResult();
 
 	void registerUSR(User& user);
-	void LoginUSR(const std::string& email, const std::string& password);
+	bool LoginUSR(const std::string& email, const std::string& password);
 	void updateName(const std::string& usrName, int ID);
 	void updateEmail(const std::string& usrEmail, int ID);
 	void updatePassword(const std::string& usrPassword, int ID);
-	void deleteUSR(const std::string& usrPassword, int ID);
-	bool isLoggedIn();
+	bool deleteUSR(const std::string& usrPassword, int ID);
 	int getUserID(const std::string& login);
 	bool checkPassword(int ID, const std::string& currentPassword);
 	void showUSR(int ID);

@@ -1,22 +1,27 @@
+#pragma warning(disable: 26495)
+
 #include "USR_DAO.h"
 #include "DB_helper.h"
 #include "User.h"
+
 #include <mysql_connection.h>
 #include <cppconn/resultset.h>
 #include <cppconn/prepared_statement.h>
 #include <string>
-
-int t = 0;
 
 USR_DAO::USR_DAO(DB_helper& server) : server_func(server) {}
 
 sql::PreparedStatement* USR_DAO::getPreparedStmt() { return pstmt; }
 sql::ResultSet* USR_DAO::getResult() { return result; }
 
-bool USR_DAO::isLoggedIn() { return t; }
-
 void USR_DAO::registerUSR(User& user)
 {
+    if (user.getEmail().empty() || user.getName().empty() || user.getPWD().empty())
+    {
+        std::cerr << "All fields must be fill" << std::endl;
+        return;
+    }
+
     try
     {
         pstmt = server_func.getCon()->prepareStatement("SELECT COUNT(*) FROM User WHERE usr_email = ?");
@@ -53,23 +58,51 @@ void USR_DAO::registerUSR(User& user)
     catch (const sql::SQLException& e) { std::cerr << "SQL Error: " << e.what() << std::endl; }
 }
 
-void USR_DAO::LoginUSR(const std::string& email, const std::string& password)
+bool USR_DAO::LoginUSR(const std::string& email, const std::string& password)
 {
-    pstmt = server_func.getCon()->prepareStatement("SELECT * FROM User WHERE usr_email = ? AND usr_password = ?");
+    if (email.empty())
+    {
+        std::cerr << "Email can't be empty" << std::endl;
+        return false;
+    }
+    else if (password.empty())
+    {
+        std::cerr << "Password can't be empty" << std::endl;
+        return false;
+    }
+
+    pstmt = server_func.getCon()->prepareStatement("SELECT * FROM User WHERE usr_email = ?");
     pstmt->setString(1, email);
-    pstmt->setString(2, password);
     result = pstmt->executeQuery();
+
     if (result->next())
     {
-        std::cout << "Login successful." << std::endl;
-        t++;
+        if (result->getString("usr_password") == password)
+        {
+            std::cout << "Login successful." << std::endl;
+            return true;
+        }
+        else
+        {
+            std::cerr << "Login failed. Incorrect password." << std::endl;
+            return false;
+        }
     }
-    else { std::cout << "Login failed. Incorrect login or password." << std::endl; }
+    else
+    {
+        std::cerr << "Login failed. Account not found. Please register." << std::endl;
+        return false;
+    }
 }
-
 
 void USR_DAO::updateName(const std::string& usrName, int ID)
 {
+    if (usrName.empty()) 
+    {
+        std::cout << "Keeping the current name." << std::endl;
+        return;
+    }
+
     try
     {
         pstmt = server_func.getCon()->prepareStatement("UPDATE User SET usr_name = ? WHERE id = ?");
@@ -83,6 +116,12 @@ void USR_DAO::updateName(const std::string& usrName, int ID)
 
 void USR_DAO::updateEmail(const std::string& usrEmail, int ID)
 {
+    if (usrEmail.empty()) 
+    {
+        std::cout << "Keeping the current email." << std::endl;
+        return;
+    }
+
     try 
     {
         pstmt = server_func.getCon()->prepareStatement("SELECT * FROM User WHERE usr_email = ?");
@@ -103,6 +142,12 @@ void USR_DAO::updateEmail(const std::string& usrEmail, int ID)
 
 void USR_DAO::updatePassword(const std::string& usrPassword, int ID)
 {
+    if (usrPassword.empty()) 
+    {
+        std::cout << "Keeping the current password." << std::endl;
+        return;
+    }
+
     try 
     {
         pstmt = server_func.getCon()->prepareStatement("UPDATE User SET usr_password = ? WHERE id = ?");
@@ -114,18 +159,14 @@ void USR_DAO::updatePassword(const std::string& usrPassword, int ID)
     catch (const sql::SQLException& e) { std::cerr << "SQL Error: " << e.what() << std::endl; }
 }
 
-void USR_DAO::deleteUSR(const std::string& usrPassword, int ID)
+bool USR_DAO::deleteUSR(const std::string& usrPassword, int ID)
 {
     char confirmation;
     std::cout << "Are you sure you want to delete your account? (y/n): ";
     std::cin >> confirmation;
-    if (confirmation != 'y' && confirmation != 'Y') 
-    {
-        std::cout << "Account deletion cancelled." << std::endl;
-        return;
-    }
+    if (confirmation != 'y' && confirmation != 'Y') { return false; }
 
-    if (!checkPassword(ID, usrPassword)) { return; }
+    if (!checkPassword(ID, usrPassword)) { return false; }
 
     try 
     {
@@ -137,10 +178,12 @@ void USR_DAO::deleteUSR(const std::string& usrPassword, int ID)
         pstmt->setInt(1, ID);
         pstmt->executeUpdate();
 
-        std::cout << "User deleted successfully." << std::endl;
+        return true;
     }
-    catch (const sql::SQLException& e) {
+    catch (const sql::SQLException& e)
+    {
         std::cerr << "SQL Error: " << e.what() << std::endl;
+        return false;
     }
 }
 
@@ -170,21 +213,11 @@ bool USR_DAO::checkPassword(int ID, const std::string& currentPassword)
         pstmt->setInt(1, ID);
         result = pstmt->executeQuery();
 
-        if (result->rowsCount() != 1) 
-        {
-            std::cerr << "User not found." << std::endl;
-            return false;
-        }
-
         result->next();
         std::string storedPassword = result->getString("usr_password");
 
         if (storedPassword == currentPassword) { return true; }
-        else 
-        {
-            std::cerr << "Incorrect password." << std::endl;
-            return false;
-        }
+        else { return false; }
     }
     catch (const sql::SQLException& e) 
     {

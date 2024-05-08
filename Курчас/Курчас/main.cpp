@@ -5,11 +5,13 @@
 #include <iomanip>
 #include <cctype> 
 #include <regex>
+
 #include "DB_helper.h"
 #include "task.h"
 #include "Task_DAO.h"
 #include "User.h"
 #include "USR_DAO.h"
+
 #ifdef _WIN32
 #include <cstdlib>
 #endif // _WIN32
@@ -108,6 +110,8 @@ int main()
 {
     DB_helper server("127.0.0.1:3306", "Walde", "2005090717_Vol");
 
+    clearConsole();
+    link:
     bool running = true;
     while (running)
     {
@@ -123,8 +127,11 @@ int main()
         case '1':
         {
             std::string username, email, password;
+            clearConsole();
+            std::cout << "if you randomly selected this item, write 'back' to return" << std::endl;
             std::cout << "Enter username: ";
             std::getline(std::cin, username);
+            if (username == "back") { clearConsole(); break; }
 
             if (username.length() > MAX_NAME_LENGTH) 
             {
@@ -133,6 +140,7 @@ int main()
             }
             std::cout << "Enter email: ";
             std::getline(std::cin, email);
+            if (email == "back") { clearConsole(); break; }
             if (email.length() > MAX_EMAIL_LENGTH)
             {
                 std::cerr << "Error: Maximum allowed length for email exceeded." << std::endl;
@@ -147,6 +155,7 @@ int main()
 
             std::cout << "Enter password: ";
             std::getline(std::cin, password);
+            if (password == "back") { clearConsole(); break; }
 
             User newUser(username, email, password);
             USR_DAO dao(server);
@@ -164,10 +173,9 @@ int main()
 
             USR_DAO dao(server);
             clearConsole();
-            dao.LoginUSR(email, password);
-            int ID = dao.getUserID(email);
-            if (dao.isLoggedIn())
+            if (dao.LoginUSR(email, password))
             {
+                int ID = dao.getUserID(email);  
                 Task_DAO taskDao(server);
                 bool loggedIn = true;
                 while (loggedIn)
@@ -188,13 +196,14 @@ int main()
                         bool usrMenu = true;
                         while (usrMenu)
                         {
-                            logo();
-                            std::cout << "1. Show user" << std::endl
-                                << "2. Change Name" << std::endl
-                                << "3. Change email" << std::endl
-                                << "4. Change password" << std::endl
-                                << "5. Delete user" << std::endl
-                                << "6. Back" << std::endl;
+                            std::cout << std::endl;
+                            dao.showUSR(ID);
+                            std::cout << std::endl;
+                            std::cout << "1. Change Name" << std::endl
+                                << "2. Change email" << std::endl
+                                << "3. Change password" << std::endl
+                                << "4. Delete user" << std::endl
+                                << "5. Back" << std::endl;
 
                             std::cin >> action;
 
@@ -205,19 +214,19 @@ int main()
                             {
                             case '1':
                                 clearConsole();
-                                dao.showUSR(ID);
-                                break;
-                            case '2':
-                                clearConsole();
+                                std::cout << "if you randomly selected this item, write 'back' to return" << std::endl;
                                 std::cout << "Enter new name: ";
                                 std::getline(std::cin, newValue);
+                                if (newValue == "back") { clearConsole(); break; }
                                 clearConsole();
                                 dao.updateName(newValue, ID);
                                 break;
-                            case '3':
+                            case '2':
                                 clearConsole();
+                                std::cout << "if you randomly selected this item, write 'back' to return" << std::endl;
                                 std::cout << "Enter current password for change email: ";
                                 currentPassword = hidePass(currentPassword);
+                                if (currentPassword == "back") { clearConsole(); break; }
 
                                 std::cout << std::endl;
 
@@ -225,6 +234,7 @@ int main()
                                 {
                                     std::cout << "Enter new email: ";
                                     std::getline(std::cin, newValue);
+                                    if (newValue == "back") { clearConsole(); break; }
                                     if (!isValidEmail(newValue))
                                     {
                                         clearConsole();
@@ -234,11 +244,14 @@ int main()
                                     clearConsole();
                                     dao.updateEmail(newValue, ID);
                                 }
+                                else if (!dao.checkPassword(ID, currentPassword)) { clearConsole(); std::cerr << "Incorrect password." << std::endl; }
                                 break;
-                            case '4':
+                            case '3':
                                 clearConsole();
+                                std::cout << "if you randomly selected this item, write 'back' to return" << std::endl;
                                 std::cout << "Enter current password for update: ";
                                 currentPassword = hidePass(currentPassword);
+                                if (currentPassword == "back") { clearConsole(); break; }
 
                                 std::cout << std::endl;
 
@@ -246,23 +259,39 @@ int main()
                                 {
                                     std::cout << "Enter new password: ";
                                     newValue = hidePass(newValue);
+                                    if (newValue == "back") { clearConsole(); break; }
                                     clearConsole();
                                     dao.updatePassword(newValue, ID);
                                 }
+                                else if (!dao.checkPassword(ID, currentPassword)) { clearConsole(); std::cerr << "Incorrect password." << std::endl; }
                                 break;
-                            case '5':
+                            case '4':
                                 clearConsole();
+                                std::cout << "if you randomly selected this item, write 'back' to return" << std::endl;
                                 std::cout << "Enter current password for delete your account: ";
                                 currentPassword = hidePass(currentPassword);
-                                clearConsole();
-                                dao.deleteUSR(currentPassword, ID);
+                                if (currentPassword == "back") { clearConsole(); break; }
+
+                                std::cout << std::endl;
+
+                                if (dao.checkPassword(ID, currentPassword))
+                                {
+                                    if (dao.deleteUSR(currentPassword, ID)) 
+                                    { 
+                                        clearConsole();
+                                        std::cout << "User deleted successfully." << std::endl;
+                                        goto link; 
+                                    }
+                                    else { clearConsole(); std::cerr << "Account deletion cancelled." << std::endl; }
+                                }
+                                else if (!dao.checkPassword(ID, currentPassword)) { clearConsole(); std::cerr << "Incorrect password." << std::endl; }
                                 break;
-                            case '6':
+                            case '5':
                                 clearConsole();
                                 usrMenu = false;
                                 break;
                             default:
-                                std::cerr << "Invalid choice." << std::endl;
+                                std::cerr << "Wrong action. Try again." << std::endl;
                                 break;
                             }
                         }
@@ -276,12 +305,10 @@ int main()
                         {
                             logo();
                             std::cout << "1. Create task" << std::endl
-                                << "2. Update task" << std::endl
+                                << "2. Edit task" << std::endl
                                 << "3. Task list" << std::endl
-                                << "4. Delete Task" << std::endl
-                                << "5. Back" << std::endl;
+                                << "4. Back" << std::endl;
 
-                            std::cin.clear();
                             std::cin >> action;
                             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                             switch (action)
@@ -291,10 +318,13 @@ int main()
                                 std::string title, description;
                                 int priority;
                                 clearConsole();
+                                std::cout << "if you randomly selected this item, write 'back' to return" << std::endl;
                                 std::cout << "Enter title: ";
                                 std::getline(std::cin, title);
+                                if (title == "back") { clearConsole(); break; }
                                 std::cout << "Enter description: ";
                                 std::getline(std::cin, description);
+                                if (description == "back") { clearConsole(); break; }
                                 std::cout << "Enter priority (1 - High, 2 - Medium, 3 - Low): ";
                                 std::cin >> priority;
                                 Priority taskPriority = static_cast<Priority>(priority - 1);
@@ -304,44 +334,219 @@ int main()
                                 break;
                             }
                             case '2':
-                            {
-                                std::string title;
-                                int priority, status;
+                            {   
+                                bool taskMenu2 = true;
                                 clearConsole();
-                                taskDao.selectList(ID);
-                                std::cout << std::endl;
-                                std::cout << "Enter title of the task to update: ";
-                                std::getline(std::cin, title);
-                                std::cout << "Enter new priority (1 - High, 2 - Medium, 3 - Low): ";
-                                std::cin >> priority;
-                                std::cout << "Enter new status (1 - In progress, 2 - Done, 3 - Not started): ";
-                                std::cin >> status;
-                                Priority newPriority = static_cast<Priority>(priority - 1);
-                                Status newStatus = static_cast<Status>(status - 1);
-                                clearConsole();
-                                taskDao.updateNoteStatus(title, newPriority, newStatus, ID);
+                                while (taskMenu2)
+                                {
+                                    std::string title, newTitle, newDescription;
+                                    int priority, status;
+                                    Priority newPriority;
+                                    Status newStatus;
+                                    taskDao.selectList(ID);
+                                    std::cout << std::endl;
+                                    std::cout << "1. Change name" << std::endl
+                                        << "2. Edit description" << std::endl
+                                        << "3. Update priority " << std::endl
+                                        << "4. Update status" << std::endl
+                                        << "5. Delete task" << std::endl
+                                        << "6. Back" << std::endl;
+
+                                    std::cin >> action;
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                                    switch (action)
+                                    {
+                                    case '1':
+                                        clearConsole();
+                                        std::cout << "if you randomly selected this item, write 'back' to return" << std::endl;
+                                        std::cout << "Enter title of the task to update: ";
+                                        std::getline(std::cin, title);
+                                        if (title == "back") { clearConsole(); break; }
+                                        std::cout << "Enter new title: ";
+                                        std::getline(std::cin, newTitle);
+                                        clearConsole();
+                                        taskDao.updateTaskName(title, newTitle, ID);
+                                        break;
+                                    case '2':
+                                        clearConsole();
+                                        std::cout << "if you randomly selected this item, write 'back' to return" << std::endl;
+                                        std::cout << "Enter title of the task to update: ";
+                                        std::getline(std::cin, title);
+                                        if (title == "back") { clearConsole(); break; }
+                                        std::cout << "Enter new description: ";
+                                        std::getline(std::cin, newDescription);
+                                        clearConsole();
+                                        taskDao.updateDescription(title, newDescription, ID);
+                                        break;
+                                    case '3':
+                                        clearConsole();
+                                        std::cout << "if you randomly selected this item, write 'back' to return" << std::endl;
+                                        std::cout << "Enter title of the task to update: ";
+                                        std::getline(std::cin, title);
+                                        if (title == "back") { clearConsole(); break; }
+                                        std::cout << "Enter new priority (1 - High, 2 - Medium, 3 - Low): ";
+                                        std::cin >> priority;
+                                        if (priority <= 3)
+                                        {
+                                            newPriority = static_cast<Priority>(priority - 1);
+                                            clearConsole();
+                                            taskDao.updatePriority(title, newPriority, ID);
+                                        }
+                                        else { clearConsole(); std::cerr << "Wrong action" << std::endl; }
+                                        break;
+                                    case '4':
+                                        clearConsole();
+                                        std::cout << "if you randomly selected this item, write 'back' to return" << std::endl;
+                                        std::cout << "Enter title of the task to update: ";
+                                        std::getline(std::cin, title);
+                                        if (title == "back") { clearConsole(); break; }
+                                        std::cout << "Enter new status (1 - In progress, 2 - Done, 3 - Not started): ";
+                                        std::cin >> status;
+                                        if (status <= 3)
+                                        {
+                                            newStatus = static_cast<Status>(status - 1);
+                                            clearConsole();
+                                            taskDao.updateStatus(title, newStatus, ID);
+                                        }
+                                        else { clearConsole(); std::cerr << "Wrong action" << std::endl; }
+                                        break;
+                                    case '5':
+                                    {
+                                        std::string title;
+                                        clearConsole();
+                                        std::cout << "if you randomly selected this item, write 'back' to return" << std::endl;
+                                        std::cout << "Enter title of the task to delete: ";
+                                        std::getline(std::cin, title);
+                                        if (title == "back") { clearConsole(); break; }
+                                        clearConsole();
+                                        taskDao.deletenNote(title, ID);
+                                        break;
+                                    }
+                                    case '6':
+                                        clearConsole();
+                                        taskMenu2 = false;
+                                        break;
+                                    default:
+                                        std::cerr << "Wrong action. Try again." << std::endl;
+                                        break;
+                                    }
+                                }
                                 break;
                             }
                             case '3':
-                                clearConsole();
-                                taskDao.selectList(ID);
-                                std::cout << std::endl;
-                                break;
-                            case '4':
                             {
-                                std::string title;
+                                bool taskMenu3 = true;
                                 clearConsole();
-                                taskDao.selectList(ID);
-                                std::cout << "Enter title of the task to delete: ";
-                                std::getline(std::cin, title);
-                                clearConsole();
-                                taskDao.deletenNote(title, ID);
+                                while (taskMenu3)
+                                {
+                                    taskDao.selectList(ID);
+                                    std::cout << std::endl;
+
+                                    std::cout << "1. Sort by priority" << std::endl
+                                        << "2. Sort by status" << std::endl
+                                        << "3. Back" << std::endl;
+
+                                    std::cin >> action;
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                                    switch (action)
+                                    {
+                                    case '1':
+                                    {
+                                        clearConsole();
+                                        bool taskMenu4 = true;
+                                        while (taskMenu4)
+                                        {
+                                            std::cout << std::endl;
+                                            std::cout << "1. From done " << std::endl
+                                                << "2. From not started" << std::endl
+                                                << "3. From in progress" << std::endl
+                                                << "4. Back" << std::endl;
+
+                                            std::cin >> action;
+                                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                                            switch (action)
+                                            {
+                                            case '1':
+                                                clearConsole();
+                                                taskDao.sortByStatus(ID, action);
+                                                break;
+                                            case '2':
+                                                clearConsole();
+                                                taskDao.sortByStatus(ID, action);
+                                                break;
+                                            case '3':
+                                                clearConsole();
+                                                taskDao.sortByStatus(ID, action);
+                                                break;
+                                            case '4':
+                                                clearConsole();
+                                                taskMenu4 = false;
+                                                break;
+                                            default:
+                                                std::cerr << "Wrong action. Try again." << std::endl;
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case '2':
+                                    {
+                                        clearConsole();
+                                        bool taskMenu5 = true;
+                                        while (taskMenu5)
+                                        {
+                                            std::cout << std::endl;
+                                            std::cout << "1. From high" << std::endl
+                                                << "2. From low" << std::endl
+                                                << "3. From medium" << std::endl
+                                                << "4. Back" << std::endl;
+
+                                            std::cin >> action;
+                                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                                            switch (action)
+                                            {
+                                            case '1':
+                                                clearConsole();
+                                                taskDao.sortByPriority(ID, action);
+                                                break;
+                                            case '2':
+                                                clearConsole();
+                                                taskDao.sortByPriority(ID, action);
+                                                break;
+                                            case '3':
+                                                clearConsole();
+                                                taskDao.sortByPriority(ID, action);
+                                                break;
+                                            case '4':
+                                                clearConsole();
+                                                taskMenu5 = false;
+                                                break;
+                                            default:
+                                                std::cerr << "Wrong action. Try again." << std::endl;
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case '3':
+                                    {
+                                        clearConsole();
+                                        taskMenu3 = false;
+                                        break;
+                                    }
+                                    default:
+                                        std::cerr << "Wrong action. Try again." << std::endl;
+                                        break;
+                                    }
+                                }
                                 break;
                             }
-                            case '5':
+                            case '4':
+                            {
                                 clearConsole();
                                 taskMenu = false;
                                 break;
+                            }
                             default:
                                 clearConsole();
                                 std::cerr << "Wrong action. Try again." << std::endl;
@@ -361,11 +566,7 @@ int main()
                     }
                 }
             }
-            else
-            {
-                clearConsole();
-                std::cerr << "Account not exist, try to sign up." << std::endl;
-            }
+            else { break; }
             break;
         }
         case '3':
