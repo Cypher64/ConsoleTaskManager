@@ -21,11 +21,13 @@ public:
 
 	void insertInToList(Task& task, int usrID);
 	void selectList(int usrID);
+
 	void updateTaskName(const std::string& currentTaskName, const std::string& newTaskName, int usrID);
 	void updateDescription(const std::string& taskName, const std::string& newDescription, int usrID);
 	void updatePriority(const std::string& taskName, Priority priority, int usrID);
 	void updateStatus(const std::string& taskName, Status status, int usrID);
 	void deletenNote(const std::string& taskName, int usrID);
+
 	void displaySortedResult();
 	void sortByPriority(int usrID, int action);
 	void sortByStatus(int usrID, int action);

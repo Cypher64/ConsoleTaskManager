@@ -3,6 +3,7 @@
 
 #include "DB_helper.h"
 #include "User.h"
+#include "addModules.h"
 
 #include <mysql_connection.h>
 #include <cppconn/resultset.h>
@@ -19,10 +20,12 @@ public:
 
 	void registerUSR(User& user);
 	bool LoginUSR(const std::string& email, const std::string& password);
+
 	void updateName(const std::string& usrName, int ID);
 	void updateEmail(const std::string& usrEmail, int ID);
 	void updatePassword(const std::string& usrPassword, int ID);
 	bool deleteUSR(const std::string& usrPassword, int ID);
+
 	int getUserID(const std::string& login);
 	bool checkPassword(int ID, const std::string& currentPassword);
 	void showUSR(int ID);

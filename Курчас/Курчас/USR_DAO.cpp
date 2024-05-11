@@ -3,6 +3,7 @@
 #include "USR_DAO.h"
 #include "DB_helper.h"
 #include "User.h"
+#include "addModules.h"
 
 #include <mysql_connection.h>
 #include <cppconn/resultset.h>
@@ -13,6 +14,7 @@ USR_DAO::USR_DAO(DB_helper& server) : server_func(server) {}
 
 sql::PreparedStatement* USR_DAO::getPreparedStmt() { return pstmt; }
 sql::ResultSet* USR_DAO::getResult() { return result; }
+
 
 void USR_DAO::registerUSR(User& user)
 {
@@ -28,7 +30,9 @@ void USR_DAO::registerUSR(User& user)
         pstmt->setString(1, user.getEmail());
         result = pstmt->executeQuery();
         result->next();
+
         int userCount = result->getInt(1);
+
         if (userCount > 0)
         {
             std::cerr << "User with this Email already exists. Registration failed." << std::endl;
@@ -40,6 +44,7 @@ void USR_DAO::registerUSR(User& user)
         result = pstmt->executeQuery();
         result->next();
         userCount = result->getInt(1);
+
         if (userCount > 0)
         {
             std::cerr << "User with this User Name already exists. Registration failed." << std::endl;
@@ -49,7 +54,8 @@ void USR_DAO::registerUSR(User& user)
         pstmt = server_func.getCon()->prepareStatement("INSERT INTO User(usr_name, usr_email, usr_password) VALUES(?,?,?)");
         pstmt->setString(1, user.getName());
         pstmt->setString(2, user.getEmail());
-        pstmt->setString(3, user.getPWD());
+        pstmt->setString(3, hashing(user.getPWD()));
+
         int rowsAffected = pstmt->executeUpdate();
 
         if (rowsAffected > 0) { std::cout << "User registered successfully." << std::endl; }
@@ -77,7 +83,7 @@ bool USR_DAO::LoginUSR(const std::string& email, const std::string& password)
 
     if (result->next())
     {
-        if (result->getString("usr_password") == password)
+        if (result->getString("usr_password") == hashing(password))
         {
             std::cout << "Login successful." << std::endl;
             return true;
@@ -127,6 +133,7 @@ void USR_DAO::updateEmail(const std::string& usrEmail, int ID)
         pstmt = server_func.getCon()->prepareStatement("SELECT * FROM User WHERE usr_email = ?");
         pstmt->setString(1, usrEmail);
         result = pstmt->executeQuery();
+
         if (result->rowsCount() == 0) 
         {
             pstmt = server_func.getCon()->prepareStatement("UPDATE User SET usr_email = ? WHERE id = ?");
@@ -151,7 +158,7 @@ void USR_DAO::updatePassword(const std::string& usrPassword, int ID)
     try 
     {
         pstmt = server_func.getCon()->prepareStatement("UPDATE User SET usr_password = ? WHERE id = ?");
-        pstmt->setString(1, usrPassword);
+        pstmt->setString(1, hashing(usrPassword));
         pstmt->setInt(2, ID);
         pstmt->executeUpdate();
         std::cout << "Password updated successfully." << std::endl;
@@ -216,7 +223,7 @@ bool USR_DAO::checkPassword(int ID, const std::string& currentPassword)
         result->next();
         std::string storedPassword = result->getString("usr_password");
 
-        if (storedPassword == currentPassword) { return true; }
+        if (storedPassword == hashing(currentPassword)) { return true; }
         else { return false; }
     }
     catch (const sql::SQLException& e) 

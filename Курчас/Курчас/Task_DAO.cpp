@@ -32,6 +32,7 @@ void Task_DAO::insertInToList(Task& task, int usrID)
         pstmt->setString(2, task.getDescription());
 
         std::string priorityStr;
+
         switch (task.getPriority()) 
         {
         case Priority::High:
@@ -44,9 +45,11 @@ void Task_DAO::insertInToList(Task& task, int usrID)
             priorityStr = "Low";
             break;
         }
+
         pstmt->setString(3, priorityStr);
 
         std::string statusStr;
+
         switch (task.getStatus())
         {
         case Status::In_progress:
@@ -59,10 +62,12 @@ void Task_DAO::insertInToList(Task& task, int usrID)
             statusStr = "Not started";
             break;
         }
+
         pstmt->setString(4, statusStr);
 
         pstmt->setInt(5, usrID);
         pstmt->execute();
+
         std::cout << "One row inserted." << std::endl;
     }
     catch (const sql::SQLException& e)
@@ -116,11 +121,10 @@ void Task_DAO::updateTaskName(const std::string& currentTaskName, const std::str
     pstmt->setString(1, newTaskName);
     pstmt->setString(2, currentTaskName);
     pstmt->setInt(3, usrID);
+
     int rowsAffected = pstmt->executeUpdate();
-    if (rowsAffected == 0)
-    {
-        std::cerr << "Task with the specified name not found for the given user." << std::endl;
-    }
+
+    if (rowsAffected == 0) { std::cerr << "Task with the specified name not found for the given user." << std::endl; }
     else { std::cout << "Task name updated\n" << std::endl; }
 }
 
@@ -143,11 +147,10 @@ void Task_DAO::updateDescription(const std::string& taskName, const std::string&
         pstmt->setString(1, newDescription);
         pstmt->setString(2, taskName);
         pstmt->setInt(3, usrID);
+
         int rowsAffected = pstmt->executeUpdate();
-        if (rowsAffected == 0)
-        {
-            std::cerr << "Task with the specified name not found for the given user." << std::endl;
-        }
+
+        if (rowsAffected == 0) { std::cerr << "Task with the specified name not found for the given user." << std::endl; }
         else { std::cout << "Task description updated\n" << std::endl; }
     }
     catch (sql::SQLException& e) 
@@ -166,6 +169,7 @@ void Task_DAO::updatePriority(const std::string& taskName, Priority priority, in
     }
 
     std::string priorityStr;
+
     switch (priority)
     {
     case Priority::High:
@@ -183,11 +187,10 @@ void Task_DAO::updatePriority(const std::string& taskName, Priority priority, in
     pstmt->setString(1, priorityStr);
     pstmt->setString(2, taskName);
     pstmt->setInt(3, usrID);
+
     int rowsAffected = pstmt->executeUpdate();
-    if (rowsAffected == 0)
-    {
-        std::cerr << "Task with the specified name not found for the given user." << std::endl;
-    }
+
+    if (rowsAffected == 0) { std::cerr << "Task with the specified name not found for the given user." << std::endl; }
     else { std::cout << "Task priority updated\n" << std::endl; }
 }
 
@@ -200,6 +203,7 @@ void Task_DAO::updateStatus(const std::string& taskName, Status status, int usrI
     }
     
     std::string statusStr;
+
     switch (status) 
     {
     case Status::In_progress:
@@ -217,11 +221,10 @@ void Task_DAO::updateStatus(const std::string& taskName, Status status, int usrI
     pstmt->setString(1, statusStr);
     pstmt->setString(2, taskName);
     pstmt->setInt(3, usrID);
+
     int rowsAffected = pstmt->executeUpdate();
-    if (rowsAffected == 0)
-    {
-        std::cerr << "Task with the specified name not found for the given user." << std::endl;
-    }
+
+    if (rowsAffected == 0) { std::cerr << "Task with the specified name not found for the given user." << std::endl; }
     else { std::cout << "Task status updated\n" << std::endl; }
 }
 
@@ -236,17 +239,17 @@ void Task_DAO::deletenNote(const std::string& taskName, int usrID)
     pstmt = server_func.getCon()->prepareStatement("DELETE FROM task WHERE task_name = ? AND usr_id = ?");
     pstmt->setString(1, taskName);
     pstmt->setInt(2, usrID);
+
     int rowsAffected = pstmt->executeUpdate();
-    if (rowsAffected == 0)
-    {
-        std::cerr << "Task with the specified name not found for the given user." << std::endl;
-    }
+
+    if (rowsAffected == 0) { std::cerr << "Task with the specified name not found for the given user." << std::endl; }
     else { std::cout << "Row deleted\n" << std::endl; }
 }
 
 void Task_DAO::displaySortedResult()
 {
     bool tasksFound = false;
+
     if (!tasksFound)
     {
         std::cout << std::left << std::setw(20) << "Task Name" << std::setw(40) << "Description" << std::setw(10) << "Priority" << std::setw(15) << "Status" << std::endl;
@@ -262,10 +265,7 @@ void Task_DAO::displaySortedResult()
             std::cout << std::left << std::setw(20) << taskName << std::setw(40) << description << std::setw(10) << priority << std::setw(15) << status << std::endl;
         }
     }
-    else if (tasksFound)
-    {
-        std::cout << "You have no tasks yet." << std::endl;
-    }
+    else if (tasksFound){ std::cout << "You have no tasks yet." << std::endl; }
 }
 
 void Task_DAO::sortByPriority(int usrID, int action)
