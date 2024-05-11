@@ -4,13 +4,13 @@
 class User
 {
 public:
-	User(std::string name, std::string login, std::string password);
+	User(std::string name, std::string email, std::string password);
 
 	std::string getName();
-	std::string getLogin();
+	std::string getEmail();
 	std::string getPWD();
 private:
 	std::string usr_name;
-	std::string usr_login;
+	std::string usr_email;
 	std::string usr_password;
 };

@@ -5,6 +5,7 @@
 #include <cppconn/resultset.h>
 #include <cppconn/exception.h>
 #include <cppconn/prepared_statement.h>
+#pragma warning(disable: 26495)
 
 class DB_helper
 {
