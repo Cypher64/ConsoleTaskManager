@@ -85,13 +85,15 @@ void Task_DAO::selectList(int usrID)
     result = pstmt->executeQuery();
 
     bool tasksFound = false;
-    
-    if (!tasksFound)
+
+    if (result->next())
     {
+        tasksFound = true;
+
         std::cout << std::left << std::setw(20) << "Task Name" << std::setw(40) << "Description" << std::setw(10) << "Priority" << std::setw(15) << "Status" << std::endl;
         std::cout << std::string(85, '-') << std::endl;
 
-        while (result->next())
+        do
         {
             std::string taskName = result->getString("task_name");
             std::string description = result->getString("task_description");
@@ -99,9 +101,13 @@ void Task_DAO::selectList(int usrID)
             std::string status = result->getString("status");
 
             std::cout << std::left << std::setw(20) << taskName << std::setw(40) << description << std::setw(10) << priority << std::setw(15) << status << std::endl;
-        }
+        } while (result->next());
     }
-    else if (tasksFound) { std::cout << "You have no tasks yet." << std::endl; }
+
+    if (!tasksFound)
+    {
+        std::cout << "You have no tasks yet." << std::endl;
+    }
 }
 
 void Task_DAO::updateTaskName(const std::string& currentTaskName, const std::string& newTaskName, int usrID)

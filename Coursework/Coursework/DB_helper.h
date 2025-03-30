@@ -12,10 +12,6 @@ class DB_helper
 public:
 	DB_helper(const std::string& server, const std::string& username, const std::string& password);
 
-	std::string getServer() const;
-	std::string getUsername() const;
-	std::string getPassword() const;
-
 	sql::Driver* getDriver();
 	sql::Connection* getCon();
 

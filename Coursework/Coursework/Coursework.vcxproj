@@ -22,9 +22,9 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{bad9f418-0596-4396-9779-944285f25746}</ProjectGuid>
-    <RootNamespace>Курчас</RootNamespace>
+    <RootNamespace>Coursework</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Курcач</ProjectName>
+    <ProjectName>Coursework</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -106,14 +106,14 @@
       <PreprocessorDefinitions>STATIC_CONCPP;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\prog\openssl_lib\openssl lib\STATIC\x64\Debug\include;E:\MySQL\MySQL Connector C++ 8.3\include\jdbc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\prog\openssl_lib\openssl lib\STATIC\x64\Debug\include;D:\prog\repos\Cypher64\Coursework\Coursework\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\build\native\include\gtest;D:\prog\mysql-connector-c++-9.1.0-winx64\include\jdbc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\MySQL\MySQL Connector C++ 8.3\lib64\vs14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>mysqlcppconn-static.lib;D:\prog\openssl_lib\openssl lib\STATIC\x64\Debug\lib\libcrypto.lib;D:\prog\openssl_lib\openssl lib\STATIC\x64\Debug\lib\libssl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\prog\mysql-connector-c++-9.1.0-winx64\lib64\vs14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>D:\prog\mysql-connector-c++-9.1.0-winx64\lib64\vs14\mysqlcppconn-static.lib;D:\prog\openssl_lib\openssl lib\STATIC\x64\Debug\lib\libcrypto.lib;D:\prog\openssl_lib\openssl lib\STATIC\x64\Debug\lib\libssl.lib;D:\prog\repos\Cypher64\Coursework\Coursework\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\lib\native\v140\windesktop\msvcstl\static\rt-dyn\x64\Debug\gtestd.lib;D:\prog\repos\Cypher64\Coursework\Coursework\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\lib\native\v140\windesktop\msvcstl\static\rt-dyn\x64\Debug\gtest_maind.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -125,7 +125,7 @@
       <PreprocessorDefinitions>STATIC_CONCPP;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\prog\openssl_lib\openssl lib\STATIC\x64\Release\include;E:\MySQL\MySQL Connector C++ 8.3\include\jdbc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\prog\openssl_lib\openssl lib\STATIC\x64\Release\include;D:\prog\mysql-connector-c++-9.1.0-winx64\include\jdbc;D:\prog\repos\Cypher64\Coursework\Coursework\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\build\native\include\gtest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -134,7 +134,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>E:\MySQL\MySQL Connector C++ 8.3\lib64\vs14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>mysqlcppconn-static.lib;D:\prog\openssl_lib\openssl lib\STATIC\x64\Release\lib\libcrypto.lib;D:\prog\openssl_lib\openssl lib\STATIC\x64\Release\lib\libssl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D:\prog\mysql-connector-c++-9.1.0-winx64\lib64\vs14\mysqlcppconn-static.lib;D:\prog\openssl_lib\openssl lib\STATIC\x64\Release\lib\libcrypto.lib;D:\prog\openssl_lib\openssl lib\STATIC\x64\Release\lib\libssl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -149,10 +149,17 @@
   <ItemGroup>
     <ClInclude Include="DB_helper.h" />
     <ClInclude Include="addModules.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Task_DAO.h" />
     <ClInclude Include="task.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="USR_DAO.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Coursework.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="TaskManager.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

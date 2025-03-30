@@ -27,7 +27,7 @@ static void logo()
 
 int main()
 {
-    DB_helper server("127.0.0.1:3306", "Walde", "2005090717_Vol");
+    DB_helper server("127.0.0.1:3306", "root", "root");
 
     bool running = true;
 

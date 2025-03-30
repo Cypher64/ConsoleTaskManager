@@ -23,10 +23,6 @@ DB_helper::DB_helper(const std::string& server, const std::string& username, con
 	con->setSchema("to_do_db");
 }
 
-std::string DB_helper::getServer() const { return server_ip; }
-std::string DB_helper::getUsername() const { return srv_username; }
-std::string DB_helper::getPassword() const { return srv_password; }
-
 sql::Driver* DB_helper::getDriver() { return driver; }
 sql::Connection* DB_helper::getCon() { return con; }
 
