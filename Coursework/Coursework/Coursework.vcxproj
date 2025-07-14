@@ -106,14 +106,14 @@
       <PreprocessorDefinitions>STATIC_CONCPP;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)ext_libs\openssl_lib\STATIC\x64\Debug\include;$(ProjectDir)ext_libs\mysql-connector-c++-9.1.0-winx64\include\jdbc;$(ProjectDir)packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.build\native\include\gtest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)ext_libs\openssl_lib\STATIC\x64\Debug\include;$(ProjectDir)ext_libs\mysql-connector-c++-9.1.0-winx64\include\jdbc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ext_libs\mysql-connector-c++-9.1.0-winx64\lib64\vs14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>"$(ProjectDir)ext_libs\mysql-connector-c++-9.1.0-winx64\lib64\vs14\mysqlcppconn-static.lib";"$(ProjectDir)ext_libs\openssl_lib\STATIC\x64\Debug\lib\libcrypto.lib";"$(ProjectDir)ext_libs\openssl_lib\STATIC\x64\Debug\lib\libssl.lib";"$(ProjectDir)packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\lib\native\v140\windesktop\msvcstl\static\rt-dyn\x64\Debug\gtestd.lib";"$(ProjectDir)packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\lib\native\v140\windesktop\msvcstl\static\rt-dyn\x64\Debug\gtest_maind.lib";%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>"$(ProjectDir)ext_libs\mysql-connector-c++-9.1.0-winx64\lib64\vs14\mysqlcppconn-static.lib";"$(ProjectDir)ext_libs\openssl_lib\STATIC\x64\Debug\lib\libcrypto.lib";"$(ProjectDir)ext_libs\openssl_lib\STATIC\x64\Debug\lib\libssl.lib";%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -125,7 +125,7 @@
       <PreprocessorDefinitions>STATIC_CONCPP;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)ext_libs\openssl_lib\STATIC\x64\Release\include;$(ProjectDir)ext_libs\mysql-connector-c++-9.1.0-winx64\include\jdbc;$(ProjectDir)packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.build\native\include\gtest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)ext_libs\openssl_lib\STATIC\x64\Release\include;$(ProjectDir)ext_libs\mysql-connector-c++-9.1.0-winx64\include\jdbc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
