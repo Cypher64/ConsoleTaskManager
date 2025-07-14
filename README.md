@@ -13,6 +13,7 @@ To use this application, simply copy the repository and run the .exe (the Linux 
 ```
 git clone https://github.com/Cypher64/ConsoleTaskManager.git
 ```
+## Screenshots of program works
 - First screen (you need to enter numbers to navigate)
 <img width="600" height="200" alt="image" src="https://github.com/user-attachments/assets/2d957fde-8e61-4cb9-9d97-17b43014df86" />
 
