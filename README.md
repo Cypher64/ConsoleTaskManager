@@ -8,6 +8,7 @@ The user of this application can use the following functions:
 - View list of task
 - Sort task by status or by priority
 - Edit tasks
+
 To use this application, simply copy the repository and run the .exe (the Linux version will be available later and in a separate branche)
 ```
 git clone https://github.com/Cypher64/ConsoleTaskManager.git
